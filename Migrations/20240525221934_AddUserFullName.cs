@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Q.Data.Migrations
+namespace Q.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddUserFullName : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

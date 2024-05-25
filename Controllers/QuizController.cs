@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
 using Q.Models;
@@ -15,6 +16,7 @@ public class QuizController : Controller
     }
 
     // GET: Quiz/Create
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
@@ -23,6 +25,7 @@ public class QuizController : Controller
     // POST: Quiz/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([Bind("Title")] Quiz quiz)
     {
         if (ModelState.IsValid)
@@ -41,6 +44,7 @@ public class QuizController : Controller
     }
 
     // GET: Quiz/Edit/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -60,6 +64,7 @@ public class QuizController : Controller
     // POST: Quiz/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] Quiz quiz)
     {
         if (id != quiz.Id)
@@ -91,7 +96,7 @@ public class QuizController : Controller
     }
 
     // GET: Quiz/Details/5
-    // GET: Quiz/Details/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -113,6 +118,7 @@ public class QuizController : Controller
     }
 
     // GET: Quiz/Delete/5
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -133,6 +139,7 @@ public class QuizController : Controller
     // POST: Quiz/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var quiz = await _context.Quizzes.FindAsync(id);

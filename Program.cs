@@ -1,10 +1,7 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
-using Microsoft.AspNetCore.Identity;
+using Q.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +11,8 @@ builder.Services.AddDbContext<QuizDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>() // Ensure this line is present
     .AddEntityFrameworkStores<QuizDbContext>();
 builder.Services.AddControllersWithViews();
 
@@ -44,4 +42,49 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+// Seed roles and an admin user
+await SeedData(app);
+
 app.Run();
+
+async Task SeedData(WebApplication app)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+        var roles = new[] { "Admin", "User" };
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+
+        var adminEmail = "admin@example.com";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+        if (adminUser == null)
+        {
+            adminUser = new User
+            {
+                UserName = "admin",
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+            await userManager.CreateAsync(adminUser, "Admin@1234");
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+
+        // Assign "User" role to all existing users
+        var users = userManager.Users.ToList();
+        foreach (var user in users)
+        {
+            if (!await userManager.IsInRoleAsync(user, "User"))
+            {
+                await userManager.AddToRoleAsync(user, "User");
+            }
+        }
+    }
+}
