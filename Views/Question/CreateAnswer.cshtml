@@ -1,0 +1,29 @@
+﻿@model Q.Models.AnswerViewModel
+
+@{
+    ViewData["Title"] = "Create Answer";
+}
+
+<h1>Create Answer</h1>
+
+<form asp-action="CreateAnswer" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="QuestionId" />
+    <div class="form-group">
+        <label asp-for="Text" class="control-label"></label>
+        <input asp-for="Text" class="form-control" />
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+<div>
+    <a asp-action="Details" asp-controller="Quiz" asp-route-id="@Model.QuestionId">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

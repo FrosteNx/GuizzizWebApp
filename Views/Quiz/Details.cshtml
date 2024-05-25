@@ -1,0 +1,59 @@
+﻿@model Q.Models.Quiz
+
+@{
+    ViewData["Title"] = "Quiz Details";
+}
+
+<h1>Quiz Details</h1>
+
+<div>
+    <h4>Quiz</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Title
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Title
+        </dd>
+    </dl>
+</div>
+<div>
+    <h4>Questions</h4>
+    <p>
+        <a href="@Url.Action("Create", "Question", new { quizId = Model.Id })">Add Question</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Answers</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var question in Model.Questions)
+            {
+                <tr>
+                    <td>@question.Text</td>
+                    <td>
+                        <ul>
+                            @foreach (var answer in question.Answers)
+                            {
+                                <li>
+                                    @answer.Text
+                                    <a href="@Url.Action("DeleteAnswer", "Question", new { id = answer.Id })" class="text-danger">Delete</a>
+                                </li>
+                            }
+                        </ul>
+                        <a href="@Url.Action("CreateAnswer", "Question", new { questionId = question.Id })">Add Answer</a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Question", new { id = question.Id })">Edit</a> |
+                        <a href="@Url.Action("Delete", "Question", new { id = question.Id })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
