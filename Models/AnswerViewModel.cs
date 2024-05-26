@@ -4,10 +4,10 @@ namespace Q.Models
 {
     public class AnswerViewModel
     {
-        [Required]
+        public int Id { get; set; }
         public string Text { get; set; }
-
-        [Required]
+        public bool IsCorrect { get; set; }
         public int QuestionId { get; set; }
+        public int QuizId { get; set; }  // Ensure this property is included
     }
 }

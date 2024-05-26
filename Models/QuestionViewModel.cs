@@ -4,10 +4,8 @@ namespace Q.Models
 {
     public class QuestionViewModel
     {
-        [Required]
+        public int Id { get; set; }
         public string Text { get; set; }
-
-        [Required]
-        public int QuizId { get; set; } // Foreign key to Quiz
+        public int QuizId { get; set; }
     }
 }

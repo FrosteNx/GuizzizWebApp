@@ -1,20 +1,22 @@
 ﻿@model AnswerViewModel
 
 @{
-    ViewData["Title"] = "Create Answer";
+    ViewData["Title"] = "Edit Answer";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<h3>Create a new answer</h3>
+<h3>Edit Answer</h3>
 
-<form asp-action="CreateAnswer" asp-controller="Question" method="post">
+<form asp-action="EditAnswer" asp-controller="Quiz" method="post">
     <div class="form-group">
         <label asp-for="Text" class="control-label"></label>
         <input asp-for="Text" class="form-control" />
         <span asp-validation-for="Text" class="text-danger"></span>
     </div>
-    <input type="hidden" asp-for="QuestionId" />
+    <input type="hidden" asp-for="IsCorrect" />
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="QuizId" />
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-primary" />
     </div>

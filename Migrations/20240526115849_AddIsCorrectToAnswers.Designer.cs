@@ -12,8 +12,8 @@ using Q.Data;
 namespace Q.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    [Migration("20240525221934_AddUserFullName")]
-    partial class AddUserFullName
+    [Migration("20240526115849_AddIsCorrectToAnswers")]
+    partial class AddIsCorrectToAnswers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,6 +170,9 @@ namespace Q.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -244,10 +247,6 @@ namespace Q.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");

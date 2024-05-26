@@ -72,12 +72,19 @@ public class QuestionController : Controller
         return View(questionViewModel);
     }
 
-    // GET: Question/CreateAnswer/5
+    // GET: Question/CreateAnswer
     public IActionResult CreateAnswer(int questionId)
     {
+        var question = _context.Questions.Include(q => q.Quiz).FirstOrDefault(q => q.Id == questionId);
+        if (question == null)
+        {
+            return NotFound();
+        }
+
         var answerViewModel = new AnswerViewModel
         {
-            QuestionId = questionId
+            QuestionId = questionId,
+            QuizId = question.QuizId // Set the QuizId
         };
         return View(answerViewModel);
     }
@@ -134,7 +141,6 @@ public class QuestionController : Controller
         return View(answer);
     }
 
-    // POST: Question/DeleteAnswer/5
     [HttpPost, ActionName("DeleteAnswer")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteAnswerConfirmed(int id)
@@ -270,5 +276,72 @@ public class QuestionController : Controller
     private bool QuestionExists(int id)
     {
         return _context.Questions.Any(e => e.Id == id);
+    }
+
+    // GET: Question/EditAnswer/5
+    public async Task<IActionResult> EditAnswer(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var answer = await _context.Answers.FindAsync(id);
+        if (answer == null)
+        {
+            return NotFound();
+        }
+
+        var answerViewModel = new AnswerViewModel
+        {
+            Text = answer.Text,
+            QuestionId = answer.QuestionId
+        };
+
+        return View(answerViewModel);
+    }
+
+    // POST: Question/EditAnswer/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditAnswer(int id, [Bind("Text, QuestionId")] AnswerViewModel answerViewModel)
+    {
+        var answer = await _context.Answers.FindAsync(id);
+        if (answer == null)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            answer.Text = answerViewModel.Text;
+            answer.QuestionId = answerViewModel.QuestionId;
+
+            try
+            {
+                _context.Update(answer);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AnswerExists(answer.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction("Details", "Quiz", new { id = answer.Question.QuizId });
+        }
+
+        return View(answerViewModel);
+    }
+
+    private bool AnswerExists(int id)
+    {
+        return _context.Answers.Any(e => e.Id == id);
     }
 }

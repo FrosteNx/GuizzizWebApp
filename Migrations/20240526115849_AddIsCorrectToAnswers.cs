@@ -5,7 +5,7 @@
 namespace Q.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUserFullName : Migration
+    public partial class AddIsCorrectToAnswers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

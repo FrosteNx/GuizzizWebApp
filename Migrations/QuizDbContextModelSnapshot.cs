@@ -167,6 +167,9 @@ namespace Q.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -241,10 +244,6 @@ namespace Q.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");

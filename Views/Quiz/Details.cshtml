@@ -1,59 +1,66 @@
-﻿@model Q.Models.Quiz
+﻿@model Quiz
 
 @{
     ViewData["Title"] = "Quiz Details";
 }
 
-<h1>Quiz Details</h1>
+<h2>@ViewData["Title"]</h2>
 
-<div>
-    <h4>Quiz</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Title
-        </dt>
-        <dd class="col-sm-10">
-            @Model.Title
-        </dd>
-    </dl>
-</div>
-<div>
-    <h4>Questions</h4>
-    <p>
-        <a href="@Url.Action("Create", "Question", new { quizId = Model.Id })">Add Question</a>
-    </p>
-    <table class="table">
-        <thead>
+<h3>@Model.Title</h3>
+
+<h4>Questions</h4>
+<p>
+    <a asp-action="CreateQuestion" asp-route-quizId="@Model.Id">Add Question</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Answers</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var question in Model.Questions)
+        {
             <tr>
-                <th>Question</th>
-                <th>Answers</th>
-                <th>Actions</th>
+                <td>@question.Text</td>
+                <td>
+                    <ul>
+                        @foreach (var answer in question.Answers)
+                        {
+                            <li>
+                                @answer.Text
+                                @if (answer.IsCorrect)
+                                {
+                                    <strong>(Correct)</strong>
+                                }
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <form asp-action="MarkAnswerCorrect" method="post" class="d-inline">
+                                        <input type="hidden" name="questionId" value="@question.Id" />
+                                        <input type="hidden" name="answerId" value="@answer.Id" />
+                                        <button type="submit" class="btn btn-link">Mark Correct</button>
+                                    </form>
+                                    <a asp-action="EditAnswer" asp-route-id="@answer.Id" class="btn btn-link">Edit</a>
+                                    <form asp-action="DeleteAnswer" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@answer.Id" />
+                                        <button type="submit" class="btn btn-link text-danger">Delete</button>
+                                    </form>
+                                }
+                            </li>
+                        }
+                    </ul>
+                    <a asp-action="CreateAnswer" asp-controller="Question" asp-route-questionId="@question.Id">Add Answer</a>
+                </td>
+                <td>
+                    <a asp-action="EditQuestion" asp-route-id="@question.Id">Edit</a> |
+                    <form asp-action="DeleteQuestion" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@question.Id" />
+                        <button type="submit" class="btn btn-link text-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var question in Model.Questions)
-            {
-                <tr>
-                    <td>@question.Text</td>
-                    <td>
-                        <ul>
-                            @foreach (var answer in question.Answers)
-                            {
-                                <li>
-                                    @answer.Text
-                                    <a href="@Url.Action("DeleteAnswer", "Question", new { id = answer.Id })" class="text-danger">Delete</a>
-                                </li>
-                            }
-                        </ul>
-                        <a href="@Url.Action("CreateAnswer", "Question", new { questionId = question.Id })">Add Answer</a>
-                    </td>
-                    <td>
-                        <a href="@Url.Action("Edit", "Question", new { id = question.Id })">Edit</a> |
-                        <a href="@Url.Action("Delete", "Question", new { id = question.Id })">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
+    </tbody>
+</table>
