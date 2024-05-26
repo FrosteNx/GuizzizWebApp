@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Q.Models;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +15,13 @@ namespace Q.Controllers
         public AdminController(UserManager<User> userManager)
         {
             _userManager = userManager;
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Users()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return View(users);
         }
 
         public IActionResult Index()
@@ -57,8 +66,13 @@ namespace Q.Controllers
             return View(user);
         }
 
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> Delete(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
@@ -68,27 +82,26 @@ namespace Q.Controllers
             return View(user);
         }
 
-        [HttpPost, ActionName("DeleteUser")]
-        public async Task<IActionResult> DeleteUserConfirmed(string id)
+        [HttpPost]
+        [ActionName("DeleteConfirmed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            if (user != null)
             {
-                return NotFound();
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Users));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            return View(user);
+            return View("Delete", user);
         }
 
         [HttpPost]
