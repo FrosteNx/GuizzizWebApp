@@ -30,37 +30,67 @@ namespace Q.Controllers
             return View(users);
         }
 
-        public async Task<IActionResult> EditUser(string id)
+        public async Task<IActionResult> Edit(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
+
             return View(user);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(User user)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,Email")] User user)
         {
-            var existingUser = await _userManager.FindByIdAsync(user.Id);
-            if (existingUser == null)
+            if (id != user.Id)
             {
                 return NotFound();
             }
 
-            existingUser.UserName = user.UserName;
-            existingUser.Email = user.Email;
-
-            var result = await _userManager.UpdateAsync(existingUser);
-            if (result.Succeeded)
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var dbUser = await _userManager.FindByIdAsync(id);
+                if (dbUser == null)
+                {
+                    return NotFound();
+                }
+
+                dbUser.UserName = user.UserName;
+                dbUser.Email = user.Email;
+
+                var result = await _userManager.UpdateAsync(dbUser);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Users));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
-            foreach (var error in result.Errors)
+            return View(user);
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
             }
 
             return View(user);
