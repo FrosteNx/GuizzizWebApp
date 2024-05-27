@@ -6,7 +6,10 @@
 
 <h1>Quizzes</h1>
 <p>
-    <a href="@Url.Action("Create")">Create New</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a href="@Url.Action("Create")">Create New</a>
+    }
 </p>
 <table class="table">
     <thead>
@@ -21,9 +24,12 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
                 <td>
-                    <a href="@Url.Action("Details", new { id = item.Id })">Details</a> |
-                    <a href="@Url.Action("Edit", new { id = item.Id })">Edit</a> |
-                    <a href="@Url.Action("Delete", new { id = item.Id })">Delete</a> |
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a href="@Url.Action("Details", new { id = item.Id })">Details |</a>
+                        <a href="@Url.Action("Edit", new { id = item.Id })"> Edit |</a> 
+                        <a href="@Url.Action("Delete", new { id = item.Id })"> Delete |</a> 
+                    }
                     <a href="@Url.Action("TakeQuiz", "Quiz", new { id = item.Id })">Take Quiz</a>
                 </td>
             </tr>

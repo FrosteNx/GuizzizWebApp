@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Q.Models
 {
@@ -13,8 +12,8 @@ namespace Q.Models
         public int CorrectAnswerId { get; set; }
 
         [Required]
-        public int QuizId { get; set; } // Foreign key to Quiz
-        public Quiz Quiz { get; set; } // Navigation property
+        public int QuizId { get; set; } 
+        public Quiz Quiz { get; set; } 
 
         public List<Answer> Answers { get; set; } = new List<Answer>();
     }

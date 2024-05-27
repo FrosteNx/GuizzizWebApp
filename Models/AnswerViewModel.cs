@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Q.Models
+﻿namespace Q.Models
 {
     public class AnswerViewModel
     {
@@ -8,6 +6,6 @@ namespace Q.Models
         public string Text { get; set; }
         public bool IsCorrect { get; set; }
         public int QuestionId { get; set; }
-        public int QuizId { get; set; }  // Ensure this property is included
+        public int QuizId { get; set; } 
     }
 }

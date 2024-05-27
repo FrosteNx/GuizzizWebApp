@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Q.Models
+﻿namespace Q.Models
 {
     public class QuestionViewModel
     {

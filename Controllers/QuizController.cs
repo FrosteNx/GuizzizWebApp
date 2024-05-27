@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Q.Data;
 using Q.Models;
 using Q.ViewModels;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 public class QuizController : Controller
 {
