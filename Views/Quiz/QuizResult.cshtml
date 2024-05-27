@@ -1,0 +1,17 @@
+﻿@model Q.Models.QuizResult
+
+@{
+    ViewData["Title"] = "Quiz Result";
+}
+
+<h2>@Model.Quiz.Title - Result</h2>
+
+<p>
+    Total Questions: @Model.TotalQuestions
+</p>
+<p>
+    Correct Answers: @Model.CorrectAnswers
+</p>
+<p>
+    Score: @(Model.CorrectAnswers / (double)Model.TotalQuestions * 100)%
+</p>

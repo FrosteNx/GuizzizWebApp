@@ -1,0 +1,29 @@
+﻿@model Q.ViewModels.TakeQuizViewModel
+
+@{
+    ViewData["Title"] = "Take Quiz";
+}
+
+<h2>@Model.Quiz.Title</h2>
+
+<form asp-action="SubmitQuiz" method="post">
+    <input type="hidden" name="QuizId" value="@Model.Quiz.Id" />
+    @foreach (var question in Model.Quiz.Questions)
+    {
+        <div>
+            <h4>@question.Text</h4>
+            <ul>
+                @foreach (var answer in question.Answers)
+                {
+                    <li>
+                        <label>
+                            <input type="radio" name="answers_@question.Id" value="@answer.Id" />
+                            @answer.Text
+                        </label>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+    <button type="submit">Submit</button>
+</form>
