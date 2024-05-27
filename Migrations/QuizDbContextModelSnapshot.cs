@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Q.Data;
 
 #nullable disable
 
@@ -346,6 +347,9 @@ namespace Q.Migrations
                     b.Property<int>("QuizId")
                         .HasColumnType("int");
 
+                    b.Property<int>("QuizResultId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -357,6 +361,8 @@ namespace Q.Migrations
                     b.HasIndex("QuestionId");
 
                     b.HasIndex("QuizId");
+
+                    b.HasIndex("QuizResultId");
 
                     b.HasIndex("UserId");
 
@@ -475,6 +481,12 @@ namespace Q.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Q.Models.QuizResult", "QuizResult")
+                        .WithMany("UserAnswers")
+                        .HasForeignKey("QuizResultId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Q.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -487,6 +499,8 @@ namespace Q.Migrations
 
                     b.Navigation("Quiz");
 
+                    b.Navigation("QuizResult");
+
                     b.Navigation("User");
                 });
 
@@ -498,6 +512,11 @@ namespace Q.Migrations
             modelBuilder.Entity("Q.Models.Quiz", b =>
                 {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("Q.Models.QuizResult", b =>
+                {
+                    b.Navigation("UserAnswers");
                 });
 #pragma warning restore 612, 618
         }

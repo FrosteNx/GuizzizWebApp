@@ -4,6 +4,6 @@ namespace Q.Models
 {
     public class User : IdentityUser
     {
- 
+  
     }
 }

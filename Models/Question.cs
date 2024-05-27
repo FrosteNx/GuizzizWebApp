@@ -10,7 +10,7 @@ namespace Q.Models
         public string Text { get; set; }
 
         public int CorrectAnswerId { get; set; }
-
+        
         [Required]
         public int QuizId { get; set; } 
         public Quiz Quiz { get; set; } 

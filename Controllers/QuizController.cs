@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Q.Models;
 using Q.ViewModels;
 using System.Security.Claims;
+using Q.Data;
 
 public class QuizController : Controller
 {
