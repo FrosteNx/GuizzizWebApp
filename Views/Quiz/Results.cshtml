@@ -1,0 +1,14 @@
+﻿@model Q.Models.QuizResult
+
+@{
+    ViewData["Title"] = "Quiz Results";
+}
+
+<h1>Quiz Results</h1>
+
+<p>Quiz: @Model.Quiz?.Title</p>
+<p>Correct Answers: @Model.CorrectAnswers / @Model.TotalQuestions</p>
+
+<p>
+    <a href="@Url.Action("Index", "Quiz")">Back to Quizzes</a>
+</p>
