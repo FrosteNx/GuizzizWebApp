@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.OpenApi;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Q.DTOs;
 
@@ -38,7 +36,7 @@ public static class AnswerEndpoints
         .WithName("GetAllAnswers")
         .WithOpenApi();
 
-        group.MapGet("/{id}", async Task<Results<Ok<Answer>, NotFound>> (int id, QuizDbContext db) =>
+        group.MapGet("/{id}", async Task<Results<Ok<AnswerDTO>, NotFound>> (int id, QuizDbContext db) =>
         {
             var answer = await db.Answers.FirstOrDefaultAsync(model => model.Id == id);
 
