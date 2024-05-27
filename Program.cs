@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
 using Q.Models;
+using Q.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,10 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddEntityFrameworkStores<QuizDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +33,12 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -44,6 +55,12 @@ app.MapRazorPages();
 
 // Seed roles and an admin user
 await SeedData(app);
+
+app.MapQuizEndpoints();
+
+app.MapQuestionEndpoints();
+
+app.MapAnswerEndpoints();
 
 app.Run();
 
