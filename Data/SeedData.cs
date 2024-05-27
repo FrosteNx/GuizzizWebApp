@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Q.Data;
 using Q.Models;
 
 public static class SeedData
@@ -12,7 +11,7 @@ public static class SeedData
         {
             if (context.Users.Any())
             {
-                return;   // DB has been seeded
+                return;   
             }
 
             var user = new User

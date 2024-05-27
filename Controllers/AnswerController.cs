@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Q.Data;
 using Q.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
 public class AnswerController : Controller
 {

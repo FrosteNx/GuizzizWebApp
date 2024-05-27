@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Q.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Q.Controllers
 {
