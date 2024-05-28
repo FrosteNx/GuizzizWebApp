@@ -2,37 +2,49 @@
 
 @{
     ViewData["Title"] = "Quizzes";
+    var isAdmin = User.IsInRole("Admin");
 }
 
-<h1>Quizzes</h1>
-<p>
-    @if (User.IsInRole("Admin"))
-    {
-        <a href="@Url.Action("Create")">Create New</a>
-    }
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            @if (isAdmin)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Create New Quiz</h5>
+                        <p class="card-text">Click below to create a new quiz.</p>
+                        <a href="@Url.Action("Create", "Quiz")" class="btn btn-primary">Create Quiz</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var quiz in Model)
         {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                <td>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a href="@Url.Action("Details", new { id = item.Id })">Details |</a>
-                        <a href="@Url.Action("Edit", new { id = item.Id })"> Edit |</a> 
-                        <a href="@Url.Action("Delete", new { id = item.Id })"> Delete |</a> 
-                    }
-                    <a href="@Url.Action("TakeQuiz", "Quiz", new { id = item.Id })">Take Quiz</a>
-                </td>
-            </tr>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img class="card-img-top" src="" alt="Quiz Image">
+                    <div class="card-body">
+                        <h5 class="card-title">@quiz.Title</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            @if (isAdmin)
+                            {
+                                <div>
+                                    <a href="@Url.Action("Edit", "Quiz", new { id = quiz.Id })" class="btn btn-sm btn-outline-secondary mr-1">Edit</a>
+                                    <a href="@Url.Action("Delete", "Quiz", new { id = quiz.Id })" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("TakeQuiz", "Quiz", new { id = quiz.Id })" class="btn btn-sm btn-primary">Take Quiz</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
