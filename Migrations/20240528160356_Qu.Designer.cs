@@ -12,8 +12,8 @@ using Q.Data;
 namespace Q.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    [Migration("20240527201913_AddUserAnswersToQuizResult")]
-    partial class AddUserAnswersToQuizResult
+    [Migration("20240528160356_Qu")]
+    partial class Qu
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
