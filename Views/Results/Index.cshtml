@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Q.Models.QuizResult>
+
+@if (!Model.Any())
+{
+    <p>No results found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Quiz</th>
+                <th>Score</th>
+                <th>User</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var result in Model)
+            {
+                <tr>
+                    <td>@result.Quiz?.Title</td>
+                    <td>@result.CorrectAnswers / @result.TotalQuestions</td>
+                    <td>@result.User?.UserName</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@result.Id">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

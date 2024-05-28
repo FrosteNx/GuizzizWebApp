@@ -455,18 +455,6 @@ public class QuizController : Controller
                 {
                     correctAnswers++;
                 }
-
-                var userAnswer = new UserAnswer
-                {
-                    QuizId = quizId,
-                    QuestionId = question.Id,
-                    AnswerId = selectedAnswerId,
-                    UserId = userId,
-                    IsCorrect = selectedAnswer != null && selectedAnswer.IsCorrect,
-                    AnsweredOn = DateTime.UtcNow
-                };
-
-                _context.UserAnswers.Add(userAnswer);
             }
         }
 
@@ -482,8 +470,32 @@ public class QuizController : Controller
         _context.QuizResults.Add(result);
         await _context.SaveChangesAsync();
 
+ 
+        foreach (var question in quiz.Questions)
+        {
+            if (answers.TryGetValue($"answers_{question.Id}", out var selectedAnswerId))
+            {
+                var selectedAnswer = question.Answers.FirstOrDefault(a => a.Id == selectedAnswerId);
+                var userAnswer = new UserAnswer
+                {
+                    QuizResultId = result.Id,
+                    QuizId = quizId,
+                    QuestionId = question.Id,
+                    AnswerId = selectedAnswerId,
+                    UserId = userId,
+                    IsCorrect = selectedAnswer != null && selectedAnswer.IsCorrect,
+                    AnsweredOn = DateTime.UtcNow
+                };
+
+                _context.UserAnswers.Add(userAnswer);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
         return RedirectToAction("QuizResult", new { id = result.Id });
     }
+
 
     [Authorize]
     public async Task<IActionResult> QuizResult(int id)

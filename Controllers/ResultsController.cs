@@ -27,7 +27,7 @@ public class ResultsController : Controller
 
         var results = isAdmin ?
             await _context.QuizResults.Include(r => r.Quiz).Include(r => r.User).ToListAsync() :
-            await _context.QuizResults.Where(r => r.UserId == userId).Include(r => r.Quiz).ToListAsync();
+            await _context.QuizResults.Where(r => r.UserId == userId).Include(r => r.Quiz).Include(r => r.User).ToListAsync();
 
         return View(results);
     }

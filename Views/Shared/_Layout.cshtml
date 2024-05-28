@@ -25,20 +25,27 @@
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Results" asp-action="Index">Results</a>
+                            </li>
+
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Users">Admin Panel</a>
                                 </li>
                             }
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Hello @User.Identity.Name!</a>
-                            </li>
-                            <li class="nav-item">
-                                <form method="post" asp-area="Identity" asp-page="/Account/Logout" id="logoutForm" class="form-inline">
-                                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-                                </form>
-                            </li>
+                            
+                            <div class="d-flex ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">Hello @User.Identity.Name!</a>
+                                </li>
+                                <li class="nav-item">
+                                    <form method="post" asp-area="Identity" asp-page="/Account/Logout" id="logoutForm" class="form-inline">
+                                        <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                                    </form>
+                                </li>
+                            </div>
                         }
                         else
                         {
@@ -60,7 +67,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-bottom footer text-muted">
         <div class="container">
             &copy; 2024 - Guizziz - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
