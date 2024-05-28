@@ -5,23 +5,19 @@ using Q.Models;
 using Q.ViewModels;
 using System.Security.Claims;
 using Q.Data;
-
 public class QuizController : Controller
 {
     private readonly QuizDbContext _context;
-
     public QuizController(QuizDbContext context)
     {
         _context = context;
     }
-
     // GET: Quiz/Create
     [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
     }
-
     // POST: Quiz/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -36,13 +32,11 @@ public class QuizController : Controller
         }
         return View(quiz);
     }
-
     // GET: Quiz/Index
     public async Task<IActionResult> Index()
     {
         return View(await _context.Quizzes.ToListAsync());
     }
-
     // GET: Quiz/Edit/5
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
@@ -51,16 +45,13 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         var quiz = await _context.Quizzes.FindAsync(id);
         if (quiz == null)
         {
             return NotFound();
         }
-
         return View(quiz);
     }
-
     // POST: Quiz/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -71,7 +62,6 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         if (ModelState.IsValid)
         {
             try
@@ -94,7 +84,6 @@ public class QuizController : Controller
         }
         return View(quiz);
     }
-
     // GET: Quiz/Details/5
     // Details action
     public async Task<IActionResult> Details(int? id)
@@ -103,20 +92,16 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         var quiz = await _context.Quizzes
             .Include(q => q.Questions)
                 .ThenInclude(q => q.Answers)
             .FirstOrDefaultAsync(m => m.Id == id);
-
         if (quiz == null)
         {
             return NotFound();
         }
-
         return View(quiz);
     }
-
     // GET: Quiz/Delete/5
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
@@ -125,17 +110,14 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         var quiz = await _context.Quizzes
             .FirstOrDefaultAsync(m => m.Id == id);
         if (quiz == null)
         {
             return NotFound();
         }
-
         return View(quiz);
     }
-
     // POST: Quiz/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
@@ -147,12 +129,10 @@ public class QuizController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
-
     private bool QuizExists(int id)
     {
         return _context.Quizzes.Any(e => e.Id == id);
     }
-
     // GET: Quiz/CreateQuestion
     public IActionResult CreateQuestion(int quizId)
     {
@@ -162,7 +142,6 @@ public class QuizController : Controller
         };
         return View(questionViewModel);
     }
-
     // POST: Quiz/CreateQuestion
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -175,14 +154,12 @@ public class QuizController : Controller
                 Text = questionViewModel.Text,
                 QuizId = questionViewModel.QuizId
             };
-
             _context.Questions.Add(question);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", new { id = question.QuizId });
         }
         return View(questionViewModel);
     }
-
     // GET: Quiz/EditQuestion/5
     public async Task<IActionResult> EditQuestion(int? id)
     {
@@ -190,23 +167,19 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         var question = await _context.Questions.FindAsync(id);
         if (question == null)
         {
             return NotFound();
         }
-
         var questionViewModel = new QuestionViewModel
         {
             Id = question.Id,
             Text = question.Text,
             QuizId = question.QuizId
         };
-
         return View(questionViewModel);
     }
-
     // POST: Quiz/EditQuestion/5
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -216,7 +189,6 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         if (ModelState.IsValid)
         {
             try
@@ -226,7 +198,6 @@ public class QuizController : Controller
                 {
                     return NotFound();
                 }
-
                 question.Text = questionViewModel.Text;
                 _context.Update(question);
                 await _context.SaveChangesAsync();
@@ -246,12 +217,10 @@ public class QuizController : Controller
         }
         return View(questionViewModel);
     }
-
     private bool QuestionExists(int id)
     {
         return _context.Questions.Any(e => e.Id == id);
     }
-
     // GET: Quiz/DeleteQuestion/5
     public async Task<IActionResult> DeleteQuestion(int? id)
     {
@@ -259,19 +228,15 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         var question = await _context.Questions
             .Include(q => q.Quiz)
             .FirstOrDefaultAsync(m => m.Id == id);
-
         if (question == null)
         {
             return NotFound();
         }
-
         return View(question);
     }
-
     // POST: Quiz/DeleteQuestion/5
     [HttpPost, ActionName("DeleteQuestion")]
     [ValidateAntiForgeryToken]
@@ -280,19 +245,15 @@ public class QuizController : Controller
         var question = await _context.Questions
             .Include(q => q.Quiz)
             .FirstOrDefaultAsync(m => m.Id == id);
-
         if (question == null)
         {
             return NotFound();
         }
-
         var quizId = question.QuizId;
         _context.Questions.Remove(question);
         await _context.SaveChangesAsync();
-
         return RedirectToAction("Details", new { id = quizId });
     }
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> MarkAnswerCorrect(int questionId, int answerId)
@@ -300,26 +261,20 @@ public class QuizController : Controller
         var question = await _context.Questions
             .Include(q => q.Quiz)
             .FirstOrDefaultAsync(q => q.Id == questionId);
-
         if (question == null)
         {
             return NotFound();
         }
-
         var answers = await _context.Answers
             .Where(a => a.QuestionId == questionId)
             .ToListAsync();
-
         foreach (var answer in answers)
         {
             answer.IsCorrect = answer.Id == answerId;
         }
-
         await _context.SaveChangesAsync();
-
         return RedirectToAction("Details", new { id = question.QuizId });
     }
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteAnswer(int id)
@@ -328,27 +283,21 @@ public class QuizController : Controller
             .Include(a => a.Question)
             .ThenInclude(q => q.Quiz)
             .FirstOrDefaultAsync(m => m.Id == id);
-
         if (answer == null)
         {
             return NotFound();
         }
-
         _context.Answers.Remove(answer);
         await _context.SaveChangesAsync();
-
         return RedirectToAction("Details", new { id = answer.Question.QuizId });
     }
-
     public async Task<IActionResult> EditAnswer(int id)
     {
         var answer = await _context.Answers.Include(a => a.Question).FirstOrDefaultAsync(a => a.Id == id);
-
         if (answer == null)
         {
             return NotFound();
         }
-
         var viewModel = new AnswerViewModel
         {
             Id = answer.Id,
@@ -357,10 +306,8 @@ public class QuizController : Controller
             QuestionId = answer.QuestionId,
             QuizId = answer.Question.QuizId // Ensure this is set
         };
-
         return View(viewModel);
     }
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditAnswer(int id, AnswerViewModel answerViewModel)
@@ -369,7 +316,6 @@ public class QuizController : Controller
         {
             return NotFound();
         }
-
         if (ModelState.IsValid)
         {
             try
@@ -379,7 +325,6 @@ public class QuizController : Controller
                 {
                     return NotFound();
                 }
-
                 answer.Text = answerViewModel.Text;
                 answer.IsCorrect = answerViewModel.IsCorrect;
                 _context.Update(answer);
@@ -400,30 +345,10 @@ public class QuizController : Controller
         }
         return View(answerViewModel);
     }
-
     private bool AnswerExists(int id)
     {
         return _context.Answers.Any(e => e.Id == id);
     }
-
-    public async Task<IActionResult> Results(int quizResultId)
-    {
-        var result = await _context.QuizResults
-            .Include(qr => qr.UserAnswers)
-                .ThenInclude(ua => ua.Question)
-            .Include(qr => qr.UserAnswers)
-                .ThenInclude(ua => ua.Answer)
-            .Include(qr => qr.Quiz)
-            .FirstOrDefaultAsync(qr => qr.Id == quizResultId);
-
-        if (result == null)
-        {
-            return NotFound();
-        }
-
-        return View(result);
-    }
-
     [Authorize]
     public async Task<IActionResult> TakeQuiz(int id)
     {
@@ -431,58 +356,39 @@ public class QuizController : Controller
             .Include(q => q.Questions)
                 .ThenInclude(q => q.Answers)
             .FirstOrDefaultAsync(q => q.Id == id);
-
         if (quiz == null)
         {
             return NotFound();
         }
-
         var viewModel = new TakeQuizViewModel
         {
             Quiz = quiz
         };
-
         return View(viewModel);
     }
-
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> SubmitQuiz(int quizId, Dictionary<string, int> answers)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
         var quiz = await _context.Quizzes
             .Include(q => q.Questions)
-            .ThenInclude(q => q.Answers)
+                .ThenInclude(q => q.Answers)
             .FirstOrDefaultAsync(q => q.Id == quizId);
-
         if (quiz == null)
         {
             return NotFound();
         }
-
-        var quizResult = new QuizResult
-        {
-            QuizId = quizId,
-            UserId = userId,
-            TakenOn = DateTime.UtcNow,
-            TotalQuestions = quiz.Questions.Count,
-            CorrectAnswers = 0,
-            UserAnswers = new List<UserAnswer>()
-        };
-
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var totalQuestions = quiz.Questions.Count;
+        var correctAnswers = 0;
         foreach (var question in quiz.Questions)
         {
-            if (answers.TryGetValue(question.Id.ToString(), out int selectedAnswerId))
+            if (answers.TryGetValue($"answers_{question.Id}", out var selectedAnswerId))
             {
-                var isCorrect = question.Answers.Any(a => a.Id == selectedAnswerId && a.IsCorrect);
-                if (isCorrect)
+                var selectedAnswer = question.Answers.FirstOrDefault(a => a.Id == selectedAnswerId);
+                if (selectedAnswer != null && selectedAnswer.IsCorrect)
                 {
-                    quizResult.CorrectAnswers++;
+                    correctAnswers++;
                 }
             }
         }
@@ -499,7 +405,7 @@ public class QuizController : Controller
         _context.QuizResults.Add(result);
         await _context.SaveChangesAsync();
 
- 
+
         foreach (var question in quiz.Questions)
         {
             if (answers.TryGetValue($"answers_{question.Id}", out var selectedAnswerId))
@@ -512,15 +418,16 @@ public class QuizController : Controller
                     QuestionId = question.Id,
                     AnswerId = selectedAnswerId,
                     UserId = userId,
-                    IsCorrect = isCorrect,
+                    IsCorrect = selectedAnswer != null && selectedAnswer.IsCorrect,
                     AnsweredOn = DateTime.UtcNow
-                });
+                };
+                _context.UserAnswers.Add(userAnswer);
             }
         }
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Results", new { quizResultId = quizResult.Id });
+        return RedirectToAction("QuizResult", new { id = result.Id });
     }
 
 
@@ -530,12 +437,10 @@ public class QuizController : Controller
         var result = await _context.QuizResults
             .Include(r => r.Quiz)
             .FirstOrDefaultAsync(r => r.Id == id);
-
         if (result == null)
         {
             return NotFound();
         }
-
         return View(result);
     }
 }
