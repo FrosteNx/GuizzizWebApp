@@ -434,13 +434,19 @@ public class QuizController : Controller
     [Authorize]
     public async Task<IActionResult> QuizResult(int id)
     {
-        var result = await _context.QuizResults
-            .Include(r => r.Quiz)
-            .FirstOrDefaultAsync(r => r.Id == id);
-        if (result == null)
+        var quizResult = await _context.QuizResults
+            .Include(qr => qr.Quiz)
+            .Include(qr => qr.UserAnswers)
+                .ThenInclude(ua => ua.Question)
+            .Include(qr => qr.UserAnswers)
+                .ThenInclude(ua => ua.Answer)
+            .FirstOrDefaultAsync(qr => qr.Id == id);
+
+        if (quizResult == null)
         {
             return NotFound();
         }
-        return View(result);
+
+        return View(quizResult);
     }
 }
