@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
 using Q.Models;
@@ -61,6 +61,8 @@ app.MapQuizEndpoints();
 app.MapQuestionEndpoints();
 
 app.MapAnswerEndpoints();
+
+app.MapUserAnswerEndpoints();
 
 app.Run();
 
