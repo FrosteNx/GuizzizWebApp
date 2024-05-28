@@ -406,6 +406,24 @@ public class QuizController : Controller
         return _context.Answers.Any(e => e.Id == id);
     }
 
+    public async Task<IActionResult> Results(int quizResultId)
+    {
+        var result = await _context.QuizResults
+            .Include(qr => qr.UserAnswers)
+                .ThenInclude(ua => ua.Question)
+            .Include(qr => qr.UserAnswers)
+                .ThenInclude(ua => ua.Answer)
+            .Include(qr => qr.Quiz)
+            .FirstOrDefaultAsync(qr => qr.Id == quizResultId);
+
+        if (result == null)
+        {
+            return NotFound();
+        }
+
+        return View(result);
+    }
+
     [Authorize]
     public async Task<IActionResult> TakeQuiz(int id)
     {
@@ -431,9 +449,15 @@ public class QuizController : Controller
     [Authorize]
     public async Task<IActionResult> SubmitQuiz(int quizId, Dictionary<string, int> answers)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
         var quiz = await _context.Quizzes
             .Include(q => q.Questions)
-                .ThenInclude(q => q.Answers)
+            .ThenInclude(q => q.Answers)
             .FirstOrDefaultAsync(q => q.Id == quizId);
 
         if (quiz == null)
@@ -441,19 +465,24 @@ public class QuizController : Controller
             return NotFound();
         }
 
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-        var totalQuestions = quiz.Questions.Count;
-        var correctAnswers = 0;
+        var quizResult = new QuizResult
+        {
+            QuizId = quizId,
+            UserId = userId,
+            TakenOn = DateTime.UtcNow,
+            TotalQuestions = quiz.Questions.Count,
+            CorrectAnswers = 0,
+            UserAnswers = new List<UserAnswer>()
+        };
 
         foreach (var question in quiz.Questions)
         {
-            if (answers.TryGetValue($"answers_{question.Id}", out var selectedAnswerId))
+            if (answers.TryGetValue(question.Id.ToString(), out int selectedAnswerId))
             {
-                var selectedAnswer = question.Answers.FirstOrDefault(a => a.Id == selectedAnswerId);
-                if (selectedAnswer != null && selectedAnswer.IsCorrect)
+                var isCorrect = question.Answers.Any(a => a.Id == selectedAnswerId && a.IsCorrect);
+                if (isCorrect)
                 {
-                    correctAnswers++;
+                    quizResult.CorrectAnswers++;
                 }
             }
         }
@@ -483,17 +512,15 @@ public class QuizController : Controller
                     QuestionId = question.Id,
                     AnswerId = selectedAnswerId,
                     UserId = userId,
-                    IsCorrect = selectedAnswer != null && selectedAnswer.IsCorrect,
+                    IsCorrect = isCorrect,
                     AnsweredOn = DateTime.UtcNow
-                };
-
-                _context.UserAnswers.Add(userAnswer);
+                });
             }
         }
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("QuizResult", new { id = result.Id });
+        return RedirectToAction("Results", new { quizResultId = quizResult.Id });
     }
 
 
