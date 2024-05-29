@@ -105,16 +105,50 @@ public static class QuizEndpoints
         .WithName("UpdateQuiz")
         .WithOpenApi();
 
-        group.MapPost("/", async (Quiz quiz, QuizDbContext db) =>
+        group.MapPost("/", async (QuizDTO quizDto, QuizDbContext db) =>
         {
+            var quiz = new Quiz
+            {
+                Title = quizDto.Title,
+                Questions = quizDto.Questions.Select(q => new Question
+                {
+                    Text = q.Text,
+                    CorrectAnswerId = q.CorrectAnswerId,
+                    Answers = q.Answers.Select(a => new Answer
+                    {
+                        Text = a.Text,
+                        IsCorrect = a.IsCorrect
+                    }).ToList()
+                }).ToList()
+            };
+
             db.Quizzes.Add(quiz);
             await db.SaveChangesAsync();
-            return TypedResults.Created($"/api/Quiz/{quiz.Id}",quiz);
+
+            var createdQuizDto = new QuizDTO
+            {
+                Id = quiz.Id,
+                Title = quiz.Title,
+                Questions = quiz.Questions.Select(q => new QuestionDTO
+                {
+                    Id = q.Id,
+                    Text = q.Text,
+                    CorrectAnswerId = q.CorrectAnswerId,
+                    Answers = q.Answers.Select(a => new AnswerDTO
+                    {
+                        Id = a.Id,
+                        Text = a.Text,
+                        IsCorrect = a.IsCorrect
+                    }).ToList()
+                }).ToList()
+            };
+
+            return TypedResults.Created($"/api/Quiz/{quiz.Id}", createdQuizDto);
         })
         .WithName("CreateQuiz")
         .WithOpenApi();
 
-        group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (int id, QuizDbContext db) =>
+            group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (int id, QuizDbContext db) =>
         {
             var affected = await db.Quizzes
                 .Where(model => model.Id == id)
