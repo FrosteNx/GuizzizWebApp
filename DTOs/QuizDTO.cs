@@ -6,5 +6,4 @@
         public string Title { get; set; }
         public List<QuestionDTO> Questions { get; set; } = new List<QuestionDTO>();
     }
-
 }

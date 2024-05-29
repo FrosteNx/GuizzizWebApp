@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
 using Q.Models;
-using System.Threading.Tasks;
 
 public class QuestionController : Controller
 {
@@ -13,14 +12,12 @@ public class QuestionController : Controller
         _context = context;
     }
 
-    // GET: Question/Create
     public IActionResult Create(int quizId)
     {
         ViewBag.QuizId = quizId;
         return View(new QuestionViewModel { QuizId = quizId });
     }
 
-    // POST: Question/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Text, QuizId")] QuestionViewModel questionViewModel)
@@ -48,7 +45,6 @@ public class QuestionController : Controller
         {
             Console.WriteLine("ModelState is invalid");
 
-            // Log the state of the ModelState
             foreach (var state in ModelState.Values)
             {
                 foreach (var error in state.Errors)
@@ -72,7 +68,6 @@ public class QuestionController : Controller
         return View(questionViewModel);
     }
 
-    // GET: Question/CreateAnswer
     public IActionResult CreateAnswer(int questionId)
     {
         var question = _context.Questions.Include(q => q.Quiz).FirstOrDefault(q => q.Id == questionId);
@@ -84,12 +79,11 @@ public class QuestionController : Controller
         var answerViewModel = new AnswerViewModel
         {
             QuestionId = questionId,
-            QuizId = question.QuizId // Set the QuizId
+            QuizId = question.QuizId 
         };
         return View(answerViewModel);
     }
 
-    // POST: Question/CreateAnswer
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateAnswer(AnswerViewModel answerViewModel)
@@ -105,7 +99,6 @@ public class QuestionController : Controller
             _context.Add(answer);
             await _context.SaveChangesAsync();
 
-            // Load the question to get the QuizId
             var question = await _context.Questions
                 .Include(q => q.Quiz)
                 .FirstOrDefaultAsync(q => q.Id == answerViewModel.QuestionId);
@@ -120,7 +113,6 @@ public class QuestionController : Controller
         return View(answerViewModel);
     }
 
-    // GET: Question/DeleteAnswer/5
     public async Task<IActionResult> DeleteAnswer(int? id)
     {
         if (id == null)
@@ -161,7 +153,6 @@ public class QuestionController : Controller
         return RedirectToAction("Details", "Quiz", new { id = answer.Question.QuizId });
     }
 
-    // GET: Question/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -184,7 +175,6 @@ public class QuestionController : Controller
         return View(questionViewModel);
     }
 
-    // POST: Question/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Text, QuizId")] QuestionViewModel questionViewModel)
@@ -223,8 +213,6 @@ public class QuestionController : Controller
         return View(questionViewModel);
     }
 
-
-    // GET: Question/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -244,7 +232,6 @@ public class QuestionController : Controller
         return View(question);
     }
 
-    // GET: Question/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -262,7 +249,6 @@ public class QuestionController : Controller
         return View(question);
     }
 
-    // POST: Question/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -278,7 +264,6 @@ public class QuestionController : Controller
         return _context.Questions.Any(e => e.Id == id);
     }
 
-    // GET: Question/EditAnswer/5
     public async Task<IActionResult> EditAnswer(int? id)
     {
         if (id == null)
@@ -301,7 +286,6 @@ public class QuestionController : Controller
         return View(answerViewModel);
     }
 
-    // POST: Question/EditAnswer/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditAnswer(int id, [Bind("Text, QuestionId")] AnswerViewModel answerViewModel)

@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Text.Json;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Q.DTOs;
 using Q.Data;
@@ -19,7 +15,6 @@ namespace Q.Models
 
         public List<Question> Questions { get; set; } = new List<Question>();
     }
-
 
 public static class QuizEndpoints
 {

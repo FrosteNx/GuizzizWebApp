@@ -14,7 +14,6 @@ namespace Q.Models
         public Question Question { get; set; }
     }
 
-
 public static class AnswerEndpoints
 {
 	public static void MapAnswerEndpoints (this IEndpointRouteBuilder routes)

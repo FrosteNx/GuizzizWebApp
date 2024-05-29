@@ -1,10 +1,4 @@
-﻿using Q.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.EntityFrameworkCore;
-using Q.Data;
-
-namespace Q.DTOs
+﻿namespace Q.DTOs
 {
     public class QuizResultDTO
     {
@@ -17,6 +11,4 @@ namespace Q.DTOs
         public DateTime TakenOn { get; set; }
         public ICollection<UserAnswerDTO> UserAnswers { get; set; } = new List<UserAnswerDTO>();
     }
-
-
 }

@@ -1,6 +1,4 @@
-﻿using Q.Models;
-
-namespace Q.DTOs
+﻿namespace Q.DTOs
 {
     public class UserAnswerDTO
     {

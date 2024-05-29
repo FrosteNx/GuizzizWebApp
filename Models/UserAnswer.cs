@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.OpenApi;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
 
@@ -23,7 +21,6 @@ namespace Q.Models
         public int QuizResultId { get; set; }
         public QuizResult QuizResult { get; set; }
     }
-
 
 public static class UserAnswerEndpoints
 {

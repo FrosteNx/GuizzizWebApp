@@ -5,20 +5,22 @@ using Q.Models;
 using Q.ViewModels;
 using System.Security.Claims;
 using Q.Data;
+
 public class QuizController : Controller
 {
     private readonly QuizDbContext _context;
+
     public QuizController(QuizDbContext context)
     {
         _context = context;
     }
-    // GET: Quiz/Create
+
     [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
     }
-    // POST: Quiz/Create
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin")]
@@ -32,12 +34,12 @@ public class QuizController : Controller
         }
         return View(quiz);
     }
-    // GET: Quiz/Index
+
     public async Task<IActionResult> Index()
     {
         return View(await _context.Quizzes.ToListAsync());
     }
-    // GET: Quiz/Edit/5
+
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
@@ -52,7 +54,7 @@ public class QuizController : Controller
         }
         return View(quiz);
     }
-    // POST: Quiz/Edit/5
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin")]
@@ -84,8 +86,7 @@ public class QuizController : Controller
         }
         return View(quiz);
     }
-    // GET: Quiz/Details/5
-    // Details action
+
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -102,7 +103,7 @@ public class QuizController : Controller
         }
         return View(quiz);
     }
-    // GET: Quiz/Delete/5
+
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
@@ -118,7 +119,7 @@ public class QuizController : Controller
         }
         return View(quiz);
     }
-    // POST: Quiz/Delete/5
+
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin")]
@@ -133,7 +134,7 @@ public class QuizController : Controller
     {
         return _context.Quizzes.Any(e => e.Id == id);
     }
-    // GET: Quiz/CreateQuestion
+
     public IActionResult CreateQuestion(int quizId)
     {
         var questionViewModel = new QuestionViewModel
@@ -142,7 +143,7 @@ public class QuizController : Controller
         };
         return View(questionViewModel);
     }
-    // POST: Quiz/CreateQuestion
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateQuestion(QuestionViewModel questionViewModel)
@@ -160,7 +161,7 @@ public class QuizController : Controller
         }
         return View(questionViewModel);
     }
-    // GET: Quiz/EditQuestion/5
+
     public async Task<IActionResult> EditQuestion(int? id)
     {
         if (id == null)
@@ -180,7 +181,7 @@ public class QuizController : Controller
         };
         return View(questionViewModel);
     }
-    // POST: Quiz/EditQuestion/5
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditQuestion(int id, [Bind("Id, Text, QuizId")] QuestionViewModel questionViewModel)
@@ -221,7 +222,7 @@ public class QuizController : Controller
     {
         return _context.Questions.Any(e => e.Id == id);
     }
-    // GET: Quiz/DeleteQuestion/5
+
     public async Task<IActionResult> DeleteQuestion(int? id)
     {
         if (id == null)
@@ -237,7 +238,7 @@ public class QuizController : Controller
         }
         return View(question);
     }
-    // POST: Quiz/DeleteQuestion/5
+
     [HttpPost, ActionName("DeleteQuestion")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteQuestionConfirmed(int id)
@@ -254,6 +255,7 @@ public class QuizController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction("Details", new { id = quizId });
     }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> MarkAnswerCorrect(int questionId, int answerId)
@@ -275,6 +277,7 @@ public class QuizController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction("Details", new { id = question.QuizId });
     }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteAnswer(int id)
@@ -304,10 +307,11 @@ public class QuizController : Controller
             Text = answer.Text,
             IsCorrect = answer.IsCorrect,
             QuestionId = answer.QuestionId,
-            QuizId = answer.Question.QuizId // Ensure this is set
+            QuizId = answer.Question.QuizId 
         };
         return View(viewModel);
     }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditAnswer(int id, AnswerViewModel answerViewModel)
@@ -345,10 +349,12 @@ public class QuizController : Controller
         }
         return View(answerViewModel);
     }
+
     private bool AnswerExists(int id)
     {
         return _context.Answers.Any(e => e.Id == id);
     }
+
     [Authorize]
     public async Task<IActionResult> TakeQuiz(int id)
     {
@@ -366,6 +372,7 @@ public class QuizController : Controller
         };
         return View(viewModel);
     }
+
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> SubmitQuiz(int quizId, Dictionary<string, int> answers)
@@ -405,7 +412,6 @@ public class QuizController : Controller
         _context.QuizResults.Add(result);
         await _context.SaveChangesAsync();
 
-
         foreach (var question in quiz.Questions)
         {
             if (answers.TryGetValue($"answers_{question.Id}", out var selectedAnswerId))
@@ -429,7 +435,6 @@ public class QuizController : Controller
 
         return RedirectToAction("QuizResult", new { id = result.Id });
     }
-
 
     [Authorize]
     public async Task<IActionResult> QuizResult(int id)

@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
 using Q.DTOs;
 using Q.Data;
@@ -19,11 +17,11 @@ namespace Q.Models
         
         [Required]
         public int QuizId { get; set; } 
+
         public Quiz Quiz { get; set; } 
 
         public List<Answer> Answers { get; set; } = new List<Answer>();
     }
-
 
 public static class QuestionEndpoints
 {

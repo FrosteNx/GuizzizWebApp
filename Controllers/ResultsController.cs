@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
 using Q.Models;
-using System.Linq;
-using System.Threading.Tasks;
 
 [Authorize]
 public class ResultsController : Controller
@@ -19,7 +17,6 @@ public class ResultsController : Controller
         _userManager = userManager;
     }
 
-    // GET: Results
     public async Task<IActionResult> Index()
     {
         var userId = _userManager.GetUserId(User);
@@ -32,7 +29,6 @@ public class ResultsController : Controller
         return View(results);
     }
 
-    // GET: Results/Details/5
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)

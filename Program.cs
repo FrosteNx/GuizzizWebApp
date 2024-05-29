@@ -2,18 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Q.Data;
 using Q.Models;
-using Q.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<QuizDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>() // Ensure this line is present
+    .AddRoles<IdentityRole>() 
     .AddEntityFrameworkStores<QuizDbContext>();
 builder.Services.AddControllersWithViews();
 
@@ -23,7 +21,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -53,7 +50,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-// Seed roles and an admin user
 await SeedData(app);
 
 app.MapQuizEndpoints();
@@ -98,7 +94,6 @@ async Task SeedData(WebApplication app)
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
 
-        // Assign "User" role to all existing users
         var users = userManager.Users.ToList();
         foreach (var user in users)
         {

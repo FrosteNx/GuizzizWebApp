@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Q.Models;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Q.Data
 {
@@ -14,7 +10,6 @@ namespace Q.Data
         {
             using (var context = new QuizDbContext(serviceProvider.GetRequiredService<DbContextOptions<QuizDbContext>>()))
             {
-                // Check if roles exist and create them if they do not
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 string[] roleNames = { "Admin", "User" };
                 foreach (var roleName in roleNames)
@@ -25,7 +20,6 @@ namespace Q.Data
                     }
                 }
 
-                // Seed the admin user
                 var adminEmail = "admin@example.com";
                 var adminUser = await userManager.FindByEmailAsync(adminEmail);
                 if (adminUser == null)
@@ -40,7 +34,6 @@ namespace Q.Data
                     await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
 
-                // Seed roles for existing users
                 var users = userManager.Users.ToList();
                 foreach (var user in users)
                 {
