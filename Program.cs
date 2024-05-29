@@ -64,6 +64,8 @@ app.MapAnswerEndpoints();
 
 app.MapUserAnswerEndpoints();
 
+app.MapQuizResultEndpoints();
+
 app.Run();
 
 async Task SeedData(WebApplication app)
