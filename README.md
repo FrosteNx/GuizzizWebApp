@@ -42,5 +42,6 @@ Projekt Guizziz to aplikacja internetowa stworzona w technologii ASP.NET Core MV
 Podczas pierwszego uruchomienia aplikacji tworzy się domyślny użytkownik administratora. Dane logowania:
 - E-mail: *admin@example.com*
 - Password: *Admin@1234*
+
 Admin ma możliwość dodawania użytkowników, rejestracji nowych kont. Pełnego zarządzania tworzeniem nowych quizów w zakładce "Quizzes", wglądu do historii udziału wszystkich użytkowników w poszczególnych quizach w zakładce "Results", a także zarządzania użytkownikami w zakładce "Admin Panel.
 Po zalogowaniu przejdź do zakładki "Quizzes". Gdzie możesz wziąć udział w dowolnym z dostępnych quizów. Wypełnij quiz, a zobaczysz swój wynik, przejdź do zakładki "Results", żeby zobaczyć historię swoich wyników.
